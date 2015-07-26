@@ -1,0 +1,19 @@
+................This is the begin of test1.............
+#include <1_4_test2>
+
+using namespace std;
+
+void processFile();
+
+int main()
+{
+	
+	return 0;
+}
+
+void processFile()
+{
+
+}
+
+................This is the end of test1.............
