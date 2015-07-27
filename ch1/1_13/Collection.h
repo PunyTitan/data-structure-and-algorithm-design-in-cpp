@@ -25,7 +25,7 @@ public:
 	{
 		if (data != NULL)
 		{
-			delete data;
+			delete[] data;
 			data = NULL;
 		}		
 	}
