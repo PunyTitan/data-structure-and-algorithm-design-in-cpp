@@ -7,7 +7,7 @@ public:
 	Collection(Object dataA[], int len)
 	{
 		length = len;
-		max = len;
+		max = length;
 		data = new Object[length];
 		for(int i = 0; i<length; i++)
 		{
@@ -72,8 +72,33 @@ public:
 		return false;
 	}
 
+	Collection(const Object & item)
+	{	
+		copyObject(item);
+	}
+
+	const Object & operator=(const Object & item)
+	{
+		if(data != NULL)
+			delete[] data;
+		copyObject(item);
+
+		return *this;
+	}
+
 private:
 	int length;
 	int max;
-	Object *data;	
+	Object *data;
+
+	void copyObject(const Object & item)
+	{
+		length = item.length;
+		max = length;
+		data = new Object[length];
+		for(int i = 0; i<length; i++)
+		{
+			data[i] = item.data[i];
+		}
+	}	
 };
