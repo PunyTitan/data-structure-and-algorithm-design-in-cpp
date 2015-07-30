@@ -41,16 +41,8 @@ int posSumSubseq(vector<Item> & a)
 
 	for(int i=0; i+1<a.size(); i++)
 	{
-		for (int j=i+1; j<a.size(); j++ )
-		{
-			if(a[i].index<a[j].index)
-			{
-				sum = a[j].value - a[i].value;
-				break;
-			}
-		}
-		if(sum<smallest)
-			smallest = sum;		
+		if(a[i].index<a[i+1].index && (a[i+1].value-a[i].value)<smallest)
+			smallest = a[i+1].value-a[i].value;		
 
 	}
 
