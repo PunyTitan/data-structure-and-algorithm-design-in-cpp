@@ -10,6 +10,9 @@ int posSumSubseq(vector<int> & a)
 	int smallest = numeric_limits<int>::max();
 	int sum = 0;
 
+	if (a.size() == 0)
+		return 0;	
+
 	for(int i=0; i<a.size(); i++)
 	{
 		sum += a[i];
