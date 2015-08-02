@@ -110,47 +110,53 @@ public:
 
 	listDouble()
 	{
-
+		init();
 	}
 
 	~listDouble()
 	{
-
+		clear();
+		delete head;
+		delete tail;
 	}
 
 	const listDouble & operator=(const listDouble & rhs)
 	{
+		if(this == &rhs)
+			return *this;
+		
+		clear();
 
+		for(const_iterator rhs_begin = rhs.begin(); begin != rhs.end(); ++rhs_begin)
+		{
+			push_back(*rhs_begin);
+		}
 	}
 
 	listDouble(const listDouble & rhs)
 	{
-
-	}
-
-	void init()
-	{
-
+		init();
+		*this = rhs;
 	}
 
 	const_iterator begin() const
 	{
-
+		return const_iterator(head->right);
 	}
 
 	iterator begin()
 	{
-
+		return iterator(head->right);
 	}
 
 	const_iterator end() const
 	{
-
+		return const_iterator(tail);
 	}
 
 	iterator end()
 	{
-
+		return iterator(tail);
 	}
 
 	int size() const
@@ -159,67 +165,81 @@ public:
 	}
 	bool empty() const
 	{
-
+		return sizeV == 0;
 	}
 
 	void clear()
 	{
-
+		while(!empty())
+		{
+			pop_front();
+		}
 	}
 
 	iterator push_back(const Object & obj)
 	{
-
+		return insert(obj, end());
 	}
 
 	iterator push_front(const Object & obj)
 	{
-
+		return insert(obj, begin());
 	}
 
 	void pop_front()
 	{
-
+		erase(begin());
 	}
 
 	void pop_back()
 	{
-
+		erase(--end());
 	}
 
 	const Object & front() const
 	{
-
+		return *begin();
 	}
 
 	Object & front()
 	{
-
+		return *begin();
 	}
 
 	const Object & back() const
 	{
-
+		return *--end();
 	}
 
 	Object & back()
 	{
-
+		return *--end();
 	}
 
 	iterator insert(const Object & obj, iterator itr)
 	{
-
+		Node *ptr = itr.current;
+		return iterator(ptr->left = ptr->left->right = new Node(obj, ptr->left, ptr));
 	}
 
 	iterator erase(iterator itr)
 	{
+		Node *ptr = itr.current;
+		ptr->left->right = ptr->right;
+		ptr->right->left = ptr->left;
+		iterator rtr_itr(ptr->right);
+		delete ptr;
+		--sizeV;
 
+		return rtr_itr;
 	}
 
-	iterator erase(iterator begin, iterator end)
+	iterator erase(iterator from, iterator to)
 	{
-
+		while(from != to)
+		{
+			from = erase(from);
+		}
 	}
 
 
@@ -228,6 +248,16 @@ private:
 	int sizeV;
 	Node *head;
 	Node *tail;
+
+	void init()
+	{
+		sizeV = 0;
+		head = new Node;
+		tail = new Node;
+
+		head->right = tail;
+		tail->left = head;
+	}
 	
 };
 
@@ -241,6 +271,8 @@ key points:
 5. operator++ in const_iterator should return itself, not a pointer
 6. when you implement a new operator*() function in iterator, you should also implement a operator*() const, because the original one will be hidden otherwise.
 7. notice the difference between the return value of operator++() and operator++(int)
-
+8. The inheritance in the template class is special, two diff variables: dependent var and independent var
+9. the operator* in iterator is necessary, otherwise we cannot simply type *itr
+10. in begin() and end(), remember to use iterator/const_iterator to package them, and it's very important to figure out when to use pointer & when to use iterator in this class
 */
 
