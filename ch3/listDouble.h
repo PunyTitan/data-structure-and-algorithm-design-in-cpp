@@ -242,6 +242,17 @@ public:
 		}
 	}
 
+	void swap(iterator left_item, iterator right_item)
+	{
+		Node * left_ptr = left_item.current;
+		Node * right_ptr = right_item.current;
+
+		left_ptr->right = right_ptr->right;
+		right_ptr->left = left_ptr->left;
+		left_ptr->left = right_ptr;
+		right_ptr->right = left_ptr;
+	}
+
 
 private:
 
