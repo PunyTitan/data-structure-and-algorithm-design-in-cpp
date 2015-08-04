@@ -19,6 +19,7 @@ public:
 
 	class const_iterator
 	{
+	public:
 		const_iterator():current(NULL)
 		{}
 
@@ -32,6 +33,19 @@ public:
 		{
 			const_iterator rtr_itr = *this;
 			++(*this);
+			return rtr_itr;
+		}
+
+		const_iterator & operator--()
+		{
+			current = current->left;
+			return *this;
+		}
+
+		const_iterator operator--(int)
+		{
+			const_iterator rtr_itr = *this;
+			--(*this);
 			return rtr_itr;
 		}
 
@@ -50,7 +64,6 @@ public:
 		{
 			return !(*this == rhs);
 		}
-
 
 	protected:
 		Node *current;
@@ -86,6 +99,19 @@ public:
 		{
 			iterator rtr_itr = *(this->current);
 			++(*this);
+			return rtr_itr;
+		}
+
+		iterator & operator--()
+		{
+			this->current = this->current->left;
+			return *this;
+		}
+
+		iterator operator--(int)
+		{
+			iterator rtr_itr = *(this->current);
+			--(*this);
 			return rtr_itr;
 		}
 
@@ -251,6 +277,13 @@ public:
 		right_ptr->left = left_ptr->left;
 		left_ptr->left = right_ptr;
 		right_ptr->right = left_ptr;
+	}
+
+	void print()
+	{
+		for(const_iterator begin_itr=begin(); begin_itr!=end(); ++begin_itr)
+			std::cout<<*begin_itr<<" ";
+		std::cout<<"\n";
 	}
 
 
