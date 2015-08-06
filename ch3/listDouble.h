@@ -139,6 +139,17 @@ public:
 		init();
 	}
 
+	//Initialized by array
+	listDouble(const Object * ar_begin, const Object * ar_end)
+	{
+		init();
+		while(ar_begin != ar_end)
+		{
+			this->push_back(*ar_begin);
+			++ar_begin;
+		}
+	}
+
 	~listDouble()
 	{
 		clear();
