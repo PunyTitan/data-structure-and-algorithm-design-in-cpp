@@ -58,8 +58,6 @@ public:
 		{
 			if(current == rhs.current)
 				return true;
-			else
-				return false;
 		}
 
 		bool operator!=(const const_iterator & rhs) const
@@ -258,7 +256,6 @@ public:
 	iterator insert(const Object & obj, iterator itr)
 	{
 		Node *ptr = itr.current;
-		++sizeV;
 		return iterator(ptr->left = ptr->left->right = new Node(obj, ptr->left, ptr));
 	}
 
