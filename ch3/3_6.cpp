@@ -40,7 +40,7 @@ void  josephus(listDouble<Object> & lst, int m, int n)
 				}
 			}
 			std::cout<<"here"<<std::endl;
-			//==itr = lst.erase(itr);
+			itr = lst.erase(itr);
 		}
 
 		--n;
