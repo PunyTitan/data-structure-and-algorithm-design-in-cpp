@@ -129,6 +129,8 @@ public:
 		}
 
 	protected:
+		iterator(Node * ptr):const_iterator(ptr)
+		{}
 
 		Object & retrieve()
 		{
