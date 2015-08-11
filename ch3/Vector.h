@@ -95,9 +95,10 @@ private:
 	};
 
 public:
-	Vector()
+	Vector():sizeV(0), capacity(DEFAULT_CAPACITY)
 	{
-
+		head = new Object[capacity];
+		tail = head + sizeof(head)/sizeof(head[0]);
 	}
 
 	~Vector()
@@ -105,10 +106,46 @@ public:
 
 	}
 
+	Object & operator[](int ind)
+	{
+		return head[ind];
+	}
+
+	const Object & operator[](int ind) const
+	{
+		return head[ind];
+	}
+
+	void push_back(const Object & obj)
+	{
+		if(sizeV == capacity)
+			resize(capacity *= 2);
+		head[sizeV++] = obj;
+	}
+
+	void resize(int new_capacity)
+	{
+		Object * original = head;
+
+		if(new_capacity>=capacity)
+			head = new Object[new_capacity];
+		tail = head + sizeof(head)/sizeof(head[0]);
+
+		for(int i=0; i<sizeV; ++i)
+			head[i] = original[i];
+
+		delete original;
+	}
+
+	enum {DEFAULT_CAPACITY = 16};
+
 private:
 
 	int sizeV;
-	
+	int capacity;
+	Object * head;
+	Object * tail;
+
 	
 };
 
