@@ -3,94 +3,6 @@
 template<typename Object>
 class Vector
 {
-private:
-	class constant_iterator
-	{
-	public:
-		constant_iterator():current(NULL)
-		{}
-
-		const Object & operator*() const
-		{
-			return retrieve();
-		}
-
-		constant_iterator & operator++()
-		{
-			++current;
-			return *this;
-		}
-
-		constant_iterator operator++(int)
-		{
-			constant_iterator itr(current);
-			++current;
-			return itr;
-		}
-
-		bool operator==(const constant_iterator & rhs) const
-		{
-			if(current == rhs.current)
-				return true;
-			else
-				return false;
-		}
-
-		bool operator!=(const constant_iterator & rhs) const
-		{
-			return !(*this == rhs);
-		}
-
-
-	protected:
-		Object * current;
-
-		constant_iterator(Object * ptr):current(ptr)
-		{}
-
-		Object & retrieve() const
-		{
-			return *current;
-		}
-
-		friend class Vector<Object>;
-	};
-
-	class iterator : public constant_iterator
-	{
-	public:
-		iterator & operator++()
-		{
-			++(this->current);
-			return *this;
-		}
-
-		iterator operator++(int)
-		{
-			iterator itr(this->current);
-			++(this->current);
-			return itr;
-		}
-
-		Object & operator*()
-		{
-			return this->retrieve();
-		}
-
-		const Object & operator*() const
-		{
-			return constant_iterator::operator*();
-		}
-
-
-		
-	protected:
-		iterator(Object * ptr):constant_iterator(ptr)
-		{}
-
-		friend class Vector<Object>;
-	};
-
 public:
 	Vector(int initialSize = 0):sizeV(initialSize), capacity(initialSize+DEFAULT_CAPACITY)
 	{
@@ -147,9 +59,7 @@ public:
 	void pop_back()
 	{
 		--sizeV;
-	}
-
-	
+	}	
 
 	void resize(int new_capacity)
 	{
@@ -165,24 +75,27 @@ public:
 		delete [] original;
 	}
 
+	typedef Object* iterator;
+	typedef const Object* constant_iterator; 
+
 	constant_iterator begin() const
 	{
-		return constant_iterator(head);
+		return head;
 	}
 
 	iterator begin()
 	{
-		return iterator(head);
+		return head;
 	}
 
 	constant_iterator end() const
 	{
-		return constant_iterator(tail);
+		return tail;
 	}
 
 	iterator end()
 	{
-		return iterator(tail);
+		return tail;
 	}
 
 	int size() const
