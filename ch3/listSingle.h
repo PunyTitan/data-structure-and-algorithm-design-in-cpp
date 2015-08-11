@@ -258,7 +258,7 @@ public:
 	//O(log(n))
 	iterator pop_back()
 	{
-		erase(--beforeTail());
+		erase(beforeEnd());
 	}
 
 	iterator pop_front()
@@ -268,7 +268,7 @@ public:
 
 	const Object & back()
 	{
-		return *(beforeTail());
+		return *(beforeEnd());
 	}
 
 	const Object & front()
