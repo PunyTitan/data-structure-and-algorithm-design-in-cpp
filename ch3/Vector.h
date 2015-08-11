@@ -9,7 +9,6 @@ private:
 	public:
 		constant_iterator():current(NULL)
 		{}
-		~constant_iterator();
 
 		const Object & operator*() const
 		{
@@ -49,7 +48,7 @@ private:
 		constant_iterator(Object * ptr):current(ptr)
 		{}
 
-		const Object & retrieve()
+		Object & retrieve() const
 		{
 			return *current;
 		}
@@ -73,23 +72,21 @@ private:
 			return itr;
 		}
 
-		iterator & operator*()
+		Object & operator*()
 		{
-			return retrieve();
+			return this->retrieve();
 		}
 
-		constant_iterator & operator*() const
+		const Object & operator*() const
 		{
-			return constant_iterator::retrieve();
+			return constant_iterator::operator*();
 		}
 
 
 		
 	protected:
-		Object & retrieve()
-		{
-			return *(this->current);
-		}
+		iterator(Object * ptr):constant_iterator(ptr)
+		{}
 
 		friend class Vector<Object>;
 	};
@@ -98,12 +95,12 @@ public:
 	Vector():sizeV(0), capacity(DEFAULT_CAPACITY)
 	{
 		head = new Object[capacity];
-		tail = head + sizeof(head)/sizeof(head[0]);
+		tail = head;
 	}
 
 	~Vector()
 	{
-
+		delete head;
 	}
 
 	Object & operator[](int ind)
@@ -121,6 +118,7 @@ public:
 		if(sizeV == capacity)
 			resize(capacity *= 2);
 		head[sizeV++] = obj;
+		++tail;
 	}
 
 	void resize(int new_capacity)
@@ -129,12 +127,49 @@ public:
 
 		if(new_capacity>=capacity)
 			head = new Object[new_capacity];
-		tail = head + sizeof(head)/sizeof(head[0]);
+		tail = head + sizeV;
 
 		for(int i=0; i<sizeV; ++i)
 			head[i] = original[i];
 
 		delete original;
+	}
+
+	constant_iterator begin() const
+	{
+		return constant_iterator(head);
+	}
+
+	iterator begin()
+	{
+		return iterator(head);
+	}
+
+	constant_iterator end() const
+	{
+		return constant_iterator(tail);
+	}
+
+	iterator end()
+	{
+		return iterator(tail);
+	}
+
+	int size() const
+	{
+		return sizeV;
+	}
+
+	bool empty() const
+	{
+		return size() == 0;
+	}
+
+	void print() const
+	{
+		for(constant_iterator itr = begin(); itr != end(); ++itr)
+			std::cout<<*itr<<" ";
+		std::cout<<"\n";
 	}
 
 	enum {DEFAULT_CAPACITY = 16};
