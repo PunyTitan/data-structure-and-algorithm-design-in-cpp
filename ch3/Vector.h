@@ -92,15 +92,38 @@ private:
 	};
 
 public:
-	Vector():sizeV(0), capacity(DEFAULT_CAPACITY)
+	Vector(int initialSize = 0):sizeV(initialSize), capacity(initialSize+DEFAULT_CAPACITY)
 	{
 		head = new Object[capacity];
-		tail = head;
+		tail = head + initialSize;
+	}
+
+	Vector(const Vector & rhs):head(NULL), tail(NULL)
+	{
+		operator=(rhs);
 	}
 
 	~Vector()
 	{
-		delete head;
+		delete [] head;
+	}
+
+	const Vector & operator=(const Vector & rhs)
+	{
+		if(this != &rhs)
+		{
+			delete [] head;
+			sizeV = rhs.size();
+			capacity = rhs.capacity;
+
+			head = new Object[capacity];
+			tail = head + sizeV;
+
+			for(int i=0; i<size(); ++i)
+				head[i] = rhs.head[i];
+		}
+		
+		return *this;
 	}
 
 	Object & operator[](int ind)
@@ -121,18 +144,25 @@ public:
 		++tail;
 	}
 
+	void pop_back()
+	{
+		--sizeV;
+	}
+
+	
+
 	void resize(int new_capacity)
 	{
 		Object * original = head;
 
 		if(new_capacity>=capacity)
 			head = new Object[new_capacity];
-		tail = head + sizeV;
+		tail = head + sizeV;		
 
 		for(int i=0; i<sizeV; ++i)
 			head[i] = original[i];
 
-		delete original;
+		delete [] original;
 	}
 
 	constant_iterator begin() const
