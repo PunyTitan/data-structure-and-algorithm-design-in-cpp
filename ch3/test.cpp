@@ -6,38 +6,18 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
+	int count = 0;
 	Vector<int> testV;
-	testV.push_back(2);
-	testV.push_back(3);
-	testV.push_back(5);
-	testV.push_back(2);
-	testV.push_back(3);
-	testV.push_back(5);
-	testV.push_back(2);
-	testV.push_back(3);
-	testV.push_back(5);
-	testV.push_back(2);
-	testV.push_back(3);
-	testV.push_back(5);
-	testV.push_back(2);
-	testV.push_back(3);
-	testV.push_back(5);
-	testV.push_back(2);
-	testV.push_back(3);
-	testV.push_back(5);
-	testV.push_back(2);
-	testV.push_back(3);
-	testV.push_back(5);
-	testV.push_back(2);
-	testV.push_back(3);
-	testV.push_back(5);
+
+	for(int i = 0; i<20; i++)
+		testV.push_back(count++);
+	
 	testV.print();
 
-	Vector<int>::iterator itr = testV.begin();
-	cout<<*itr<<endl;
-	cout<<*(++itr)<<endl;
 	cout<<"size: "<<testV.size()<<endl;
 	cout<<"capacity: "<<testV.capacity()<<endl;
-	
+
+	testV.print();
+
 	return 0;
 }

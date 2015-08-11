@@ -140,6 +140,38 @@ public:
 		return itr+1;
 	}
 
+	//return the iterator of the element after the deleted one.
+	iterator erase(iterator itr)
+	{
+		for(iterator mod_itr = itr; mod_itr+1 != end(); ++mod_itr)
+			*mod_itr = *(mod_itr+1);
+		
+		--sizeV;
+		--tail;
+		return itr;
+	}
+
+	//return the iterator of the element after the last deleted one.
+	iterator erase(iterator from, iterator to)
+	{
+		int offset = to-from;
+
+		if(offset <= 0)
+		{
+			std::cout<<"The second parameter should be larger that the first.\n";
+			return from;
+		}
+
+		for(; from+offset != end() && from != to; ++from)
+			*from = *(from+offset);
+
+		sizeV -= offset;
+		tail -= offset;
+
+		return from;			
+
+	}
+
 	enum {DEFAULT_CAPACITY = 16};
 
 private:
