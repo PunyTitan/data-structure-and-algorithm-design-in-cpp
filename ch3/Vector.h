@@ -4,9 +4,9 @@ template<typename Object>
 class Vector
 {
 public:
-	Vector(int initialSize = 0):sizeV(initialSize), capacity(initialSize+DEFAULT_CAPACITY)
+	Vector(int initialSize = 0):sizeV(initialSize), capacityV(initialSize+DEFAULT_CAPACITY)
 	{
-		head = new Object[capacity];
+		head = new Object[capacityV];
 		tail = head + initialSize;
 	}
 
@@ -26,9 +26,9 @@ public:
 		{
 			delete [] head;
 			sizeV = rhs.size();
-			capacity = rhs.capacity;
+			capacityV = rhs.capacityV;
 
-			head = new Object[capacity];
+			head = new Object[capacityV];
 			tail = head + sizeV;
 
 			for(int i=0; i<size(); ++i)
@@ -40,18 +40,24 @@ public:
 
 	Object & operator[](int ind)
 	{
-		return head[ind];
+		if(ind>=0 && ind<size())
+			return head[ind];
+		else
+			return head[0];
 	}
 
 	const Object & operator[](int ind) const
 	{
-		return head[ind];
+		if(ind>=0 && ind<size())
+			return head[ind];
+		else
+			return head[0];
 	}
 
 	void push_back(const Object & obj)
 	{
-		if(sizeV == capacity)
-			resize(capacity *= 2);
+		if(sizeV == capacityV)
+			resize(capacityV *= 2);
 		head[sizeV++] = obj;
 		++tail;
 	}
@@ -63,9 +69,11 @@ public:
 
 	void resize(int new_capacity)
 	{
+		std::cout<<"resize called\n";
+
 		Object * original = head;
 
-		if(new_capacity>=capacity)
+		if(new_capacity>=capacityV)
 			head = new Object[new_capacity];
 		tail = head + sizeV;		
 
@@ -103,6 +111,11 @@ public:
 		return sizeV;
 	}
 
+	int capacity() const
+	{
+		return capacityV;
+	}
+
 	bool empty() const
 	{
 		return size() == 0;
@@ -115,12 +128,24 @@ public:
 		std::cout<<"\n";
 	}
 
+	iterator insert(const Object & obj, iterator itr)
+	{
+		if(sizeV == capacityV)
+			resize(capacityV *= 2);
+		for(iterator mod_itr = end(); mod_itr != itr; --mod_itr)
+			*mod_itr = *(mod_itr-1);
+		*itr = obj;
+		++sizeV;
+		++tail;
+		return itr+1;
+	}
+
 	enum {DEFAULT_CAPACITY = 16};
 
 private:
 
 	int sizeV;
-	int capacity;
+	int capacityV;
 	Object * head;
 	Object * tail;
 
