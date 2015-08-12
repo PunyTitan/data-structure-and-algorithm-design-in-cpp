@@ -18,6 +18,7 @@ private:
 public:
 	class const_iterator
 	{
+	public:
 		const_iterator():current(NULL)
 		{}
 
@@ -34,7 +35,7 @@ public:
 	 		return rtr_irt;
 	 	}
 
-	 	const_iterator operator--()
+	 	/*const_iterator operator--()
 	 	{
 	 		const_iterator itr = beforeBegin();
 
@@ -48,7 +49,7 @@ public:
 	 		const_iterator itr = *this;
 	 		--(*this);
 	 		return itr;
-	 	}
+	 	}*/
 
 	 	const Object & operator*() const
 	 	{
@@ -104,9 +105,9 @@ public:
 			return rtr_irt;
 		}
 
-		iterator operator--()
+		/*iterator operator--()
 	 	{
-	 		iterator itr = beforeBegin();
+	 		iterator itr = iterator(head);
 
 	 		while(itr.current->next != this->current)
 	 			++itr;
@@ -118,7 +119,7 @@ public:
 	 		iterator itr = *this;
 	 		--(*this);
 	 		return itr;
-	 	}
+	 	}*/
 
 		Object & operator*()
 		{
@@ -165,6 +166,7 @@ public:
 	{
 		Node * ptr = new Node(obj, itr.current->next);
 		itr.current->next = ptr;
+		++sizeV;
 		return iterator(ptr);
 	}
 
@@ -175,6 +177,7 @@ public:
 		itr.current->next = ptr->next;
 
 		delete ptr;
+		--sizeV;
 
 		return itr;
 	}
@@ -226,11 +229,6 @@ public:
 		return size() == 0;
 	}
 
-	int size()
-	{
-		return sizeV;
-	}
-
 	void push_back(const Object & obj)
 	{
 		insert(obj, beforeEnd());
@@ -261,7 +259,14 @@ public:
 	{
 		return *(begin());
 	}
-	
+
+	//3.11 a
+	int size()
+	{
+		return sizeV;
+	}
+
+	//3.11 b
 	void print()
 	{
 		const_iterator end_itr = beforeEnd();
@@ -270,6 +275,78 @@ public:
 			std::cout<<*itr<<" ";
 		}
 		std::cout<<*end_itr<<std::endl;
+	}
+
+	//3.11 c
+	iterator check(const Object & obj)
+	{
+		iterator end_itr = beforeEnd();
+		for(iterator itr = begin(); itr != beforeEnd(); ++itr)
+		{
+			if(*itr == obj)
+				return itr;
+		}
+		if(*end_itr == obj)
+			return end_itr;
+
+		return iterator(head);
+	}
+
+	const_iterator check(const Object & obj) const
+	{
+		const_iterator end_itr = beforeEnd();
+		for(const_iterator itr = begin(); itr != beforeEnd; ++itr)
+		{
+			if(*itr == obj)
+				return itr;
+		}
+		if(*end_itr == obj)
+			return end_itr;
+
+		return const_iterator(head);
+	}
+
+	//3.11 d
+	bool check_insert(const Object & obj)
+	{
+		iterator itr = check(obj);
+
+		if(itr == beforeBegin())
+		{
+			push_back(obj);
+			return true;
+		}
+
+		return false;
+	}
+
+	//3.11 e
+	bool check_erase(const Object & obj)
+	{
+		iterator erase_itr = begin();
+		iterator befErase_itr = iterator(head);
+		iterator end_itr = beforeEnd();
+		bool returnVal = false;
+
+		while(erase_itr != end_itr)
+		{
+			if(*erase_itr == obj)
+			{
+				erase(befErase_itr);
+				erase_itr = iterator(befErase_itr.current->next);
+				returnVal = true;
+			}
+			else
+			{
+				++erase_itr;
+				++befErase_itr;
+			}
+		}
+
+		if(*erase_itr == obj)
+			erase(befErase_itr);
+
+		return returnVal;
 	}
 
 private:
