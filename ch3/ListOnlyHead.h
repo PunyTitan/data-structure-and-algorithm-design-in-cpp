@@ -349,6 +349,26 @@ public:
 		return returnVal;
 	}
 
+	//3.12
+	void insertByOrder(const Object & obj)
+	{
+		insert(obj, getPosition(obj));
+	}
+
+	//3.12
+	iterator getPosition(const Object & obj)
+	{
+		Node * ptr = head;
+
+		for(; ptr->next!=NULL; ptr = ptr->next)
+		{
+			if(ptr->next->item > obj)
+				return iterator(ptr);
+		}
+
+		return iterator(ptr);
+	}
+
 private:
 	int sizeV;
 	Node * head;
