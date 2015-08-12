@@ -35,6 +35,28 @@ public:
 	 		return rtr_irt;
 	 	}
 
+	 	//3.14
+	 	const_iterator operator+(int k)
+	 	{
+	 		if(k<=0)
+	 		{
+	 			std::cout<<"Error: k should be larger than 0\n";
+	 		}
+	 		Node * ptr = current;
+	 		for(; k!=0; --k)
+	 		{
+	 			if(ptr->next == NULL)
+	 			{
+	 				std::cout<<"Error: out of bound. return the last element\n";
+	 				return const_iterator(ptr);
+	 			}
+	 			ptr = ptr->next;
+	 		}
+
+	 		return const_iterator(ptr);
+	 	}
+
+
 	 	/*const_iterator operator--()
 	 	{
 	 		const_iterator itr = beforeBegin();
