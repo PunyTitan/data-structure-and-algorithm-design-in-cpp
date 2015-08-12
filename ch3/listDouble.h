@@ -69,13 +69,21 @@ public:
 
 	protected:
 		Node *current;
+		listDouble<Object> *currentList;
 
-		const_iterator(Node *ptr):current(ptr)
+
+		const_iterator(Node *ptr, listDouble<Object> * lst):current(ptr), currentList(lst)
 		{}
 
 		Object & retrieve() const
 		{
 			return current->item;
+		}
+
+		void assertIsValid()
+		{
+			if(current == NULL || currentList == NULL || current == currentList.head)
+				std::cout<<"Error: the iterator is out of bound\n";	
 		}
 
 	friend class listDouble<Object>;
@@ -129,7 +137,7 @@ public:
 
 
 	protected:
-		iterator(Node *ptr):const_iterator(ptr)
+		iterator(Node *ptr, listDouble<Object> *lst):const_iterator(ptr, lst)
 		{}
 
 		friend class listDouble<Object>;
@@ -300,6 +308,33 @@ public:
 		std::cout<<"\n";
 	}
 
+	void splice(iterator position, listDouble<Object> & lst)
+	{
+		position.assertIsValid();
+		if(this == &lst)
+		{
+			std::cout<<"The inputed list should not be the same.\n";
+			return;
+		}
+
+		if(position.currentList != this)
+		{
+			std::cout<<"The iterator is not match with the list\n";
+			return;
+		}
+
+		sizeV += lst.size();
+
+		Node * ptr = position.current;
+		ptr->left->right = lst.head->right;
+		lst.head->right->left = ptr->left;
+		ptr->left = lst.tail->left;
+		lst.tail->left->right = ptr;
+
+		//this statement is crucial for O(1)!!
+		lst.init();
+	}
+
 
 private:
 
@@ -332,5 +367,6 @@ key points:
 8. The inheritance in the template class is special, two diff variables: dependent var and independent var
 9. the operator* in iterator is necessary, otherwise we cannot simply type *itr
 10. in begin() and end(), remember to use iterator/const_iterator to package them, and it's very important to figure out when to use pointer & when to use iterator in this class
+11. Do not forget to change the sizeV when you add or delete any item in the list!!
 */
 
