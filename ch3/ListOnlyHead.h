@@ -210,14 +210,14 @@ public:
 	const_iterator beforeEnd() const
 	{
 		Node * ptr;
-		for(ptr = head; ptr->next!=NULL; ++ptr);
+		for(ptr = head; ptr->next!=NULL; ptr = ptr->next);
 		return const_iterator(ptr);
 	}
 
 	iterator beforeEnd()
 	{
 		Node * ptr;
-		for(ptr = head; ptr->next!=NULL; ++ptr);
+		for(ptr = head; ptr->next!=NULL; ptr = ptr->next);
 		return iterator(ptr);
 	}
 
@@ -231,23 +231,23 @@ public:
 		return sizeV;
 	}
 
-	iterator push_back(const Object & obj)
+	void push_back(const Object & obj)
 	{
 		insert(obj, beforeEnd());
 	}
 
-	iterator push_front(const Object & obj)
+	void push_front(const Object & obj)
 	{
 		insert(obj, beforeBegin());
 	}
 
 	//O(log(n))
-	iterator pop_back()
+	void pop_back()
 	{
 		erase(beforeEnd());
 	}
 
-	iterator pop_front()
+	void pop_front()
 	{
 		erase(beforeBegin());
 	}
