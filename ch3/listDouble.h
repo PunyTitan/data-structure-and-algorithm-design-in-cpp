@@ -1,4 +1,5 @@
 #include <iostream>
+#include <typeinfo>
 
 template<typename Object>
 class listDouble
@@ -460,6 +461,12 @@ public:
 			std::cout<<*itr<<" ";
 		}
 		std::cout<<std::endl;
+	}
+
+	//not used by developer. It is a function to verify that "this" in a member function marked "const" has different type compared to ones without "const"
+	void testThis() const
+	{
+		std::cout<<typeid(this).name()<<std::endl;
 	}
 
 	void splice(iterator position, listDouble<Object> & lst)
