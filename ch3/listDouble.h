@@ -144,10 +144,85 @@ public:
 
 	};
 
-	class reverse_iterator:public const_iterator
+	class const_reverse_iterator
 	{
 	public:
-		reverse_iterator operator++()
+		const_reverse_iterator():current(NULL)
+		{}
+
+		const_reverse_iterator & operator++()
+		{
+			current = current->left;
+			return *this;
+		}
+
+		const_reverse_iterator operator++(int)
+		{
+			const_reverse_iterator rtr_itr = *this;
+			++(*this);
+			return rtr_itr;
+		}
+
+		const_reverse_iterator & operator--()
+		{
+			current = current->right;
+			return *this;
+		}
+
+		const_reverse_iterator operator--(int)
+		{
+			const_reverse_iterator rtr_itr = *this;
+			--(*this);
+			return rtr_itr;
+		}
+
+		const Object & operator*() const
+		{
+			return retrieve();
+		}
+
+		bool operator==(const const_reverse_iterator & rhs) const
+		{
+			if(current == rhs.current)
+				return true;
+			else
+				return false;
+		}
+
+		bool operator!=(const const_reverse_iterator & rhs) const
+		{
+			return !(*this == rhs);
+		}
+
+	protected:
+		Node *current;
+		listDouble<Object> *currentList;
+
+
+		const_reverse_iterator(Node *ptr, listDouble<Object> * lst):current(ptr), currentList(lst)
+		{}
+
+		Object & retrieve() const
+		{
+			return current->item;
+		}
+
+		void assertIsValid()
+		{
+			if(current == NULL || currentList == NULL || current == currentList.head)
+				std::cout<<"Error: the iterator is out of bound\n";	
+		}
+
+	friend class listDouble<Object>;
+	};
+
+	class reverse_iterator : public const_reverse_iterator
+	{
+		public:
+		reverse_iterator()
+		{}
+
+		reverse_iterator & operator++()
 		{
 			this->current = this->current->left;
 			return *this;
@@ -155,12 +230,12 @@ public:
 
 		reverse_iterator operator++(int)
 		{
-			reverse_iterator rtr_itr = *this;
+			reverse_iterator rtr_itr = *(this->current);
 			++(*this);
 			return rtr_itr;
 		}
 
-		reverse_iterator operator--()
+		reverse_iterator & operator--()
 		{
 			this->current = this->current->right;
 			return *this;
@@ -168,16 +243,28 @@ public:
 
 		reverse_iterator operator--(int)
 		{
-			reverse_iterator rtr_itr = *this;
-			++(*this);
+			reverse_iterator rtr_itr = *(this->current);
+			--(*this);
 			return rtr_itr;
 		}
 
+		Object & operator*()
+		{
+			return this->retrieve();
+		}
+
+		const Object & operator*() const
+		{
+			return const_reverse_iterator::operator*();
+		}
+
+
 	protected:
-		reverse_iterator(Node * ptr, listDouble<Object> * lst):const_iterator(ptr, lst)
+		reverse_iterator(Node *ptr, listDouble<Object> *lst):const_reverse_iterator(ptr, lst)
 		{}
 
 		friend class listDouble<Object>;
+
 	};
 
 	listDouble()
@@ -250,6 +337,16 @@ public:
 	reverse_iterator rEnd()
 	{
 		return reverse_iterator(head, this);
+	}
+
+	const_reverse_iterator rBegin() const
+	{	
+		return const_reverse_iterator(tail->left, this);
+	}
+
+	const_reverse_iterator rEnd() const
+	{
+		return const_reverse_iterator(head, this);
 	}
 
 	int size() const
@@ -347,16 +444,16 @@ public:
 		right_ptr->right = left_ptr;
 	}
 
-	void print()
+	void print() 
 	{
 		for(const_iterator begin_itr=begin(); begin_itr!=end(); ++begin_itr)
 			std::cout<<*begin_itr<<" ";
 		std::cout<<"\n";
 	}
 
-	void reverse_print()
+	void reverse_print() 
 	{
-		reverse_iterator itr = rBegin();
+		const_reverse_iterator itr = rBegin();
 
 		for(; itr!=rEnd(); ++itr)
 		{
