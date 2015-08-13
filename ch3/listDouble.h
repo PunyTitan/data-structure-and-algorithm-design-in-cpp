@@ -144,6 +144,42 @@ public:
 
 	};
 
+	class reverse_iterator:public const_iterator
+	{
+	public:
+		reverse_iterator operator++()
+		{
+			this->current = this->current->left;
+			return *this;
+		}
+
+		reverse_iterator operator++(int)
+		{
+			reverse_iterator rtr_itr = *this;
+			++(*this);
+			return rtr_itr;
+		}
+
+		reverse_iterator operator--()
+		{
+			this->current = this->current->right;
+			return *this;
+		}
+
+		reverse_iterator operator--(int)
+		{
+			reverse_iterator rtr_itr = *this;
+			++(*this);
+			return rtr_itr;
+		}
+
+	protected:
+		reverse_iterator(Node * ptr, listDouble<Object> * lst):const_iterator(ptr, lst)
+		{}
+
+		friend class listDouble<Object>;
+	};
+
 	listDouble()
 	{
 		init();
@@ -188,22 +224,32 @@ public:
 
 	const_iterator begin() const
 	{
-		return const_iterator(head->right);
+		return const_iterator(head->right, this);
 	}
 
 	iterator begin()
 	{
-		return iterator(head->right);
+		return iterator(head->right, this);
 	}
 
 	const_iterator end() const
 	{
-		return const_iterator(tail);
+		return const_iterator(tail, this);
 	}
 
 	iterator end()
 	{
-		return iterator(tail);
+		return iterator(tail, this);
+	}
+
+	reverse_iterator rBegin()
+	{	
+		return reverse_iterator(tail->left, this);
+	}
+
+	reverse_iterator rEnd()
+	{
+		return reverse_iterator(head, this);
 	}
 
 	int size() const
@@ -267,7 +313,7 @@ public:
 	{
 		Node *ptr = itr.current;
 		++sizeV;
-		return iterator(ptr->left = ptr->left->right = new Node(obj, ptr->left, ptr));
+		return iterator(ptr->left = ptr->left->right = new Node(obj, ptr->left, ptr), this);
 	}
 
 	iterator erase(iterator itr)
@@ -275,7 +321,7 @@ public:
 		Node *ptr = itr.current;
 		ptr->left->right = ptr->right;
 		ptr->right->left = ptr->left;
-		iterator rtr_itr(ptr->right);
+		iterator rtr_itr(ptr->right, this);
 		delete ptr;
 		--sizeV;
 
@@ -306,6 +352,17 @@ public:
 		for(const_iterator begin_itr=begin(); begin_itr!=end(); ++begin_itr)
 			std::cout<<*begin_itr<<" ";
 		std::cout<<"\n";
+	}
+
+	void reverse_print()
+	{
+		reverse_iterator itr = rBegin();
+
+		for(; itr!=rEnd(); ++itr)
+		{
+			std::cout<<*itr<<" ";
+		}
+		std::cout<<std::endl;
 	}
 
 	void splice(iterator position, listDouble<Object> & lst)
