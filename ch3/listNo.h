@@ -225,7 +225,7 @@ public:
 	}
 	bool empty() const
 	{
-		return sizeV == 0;
+		return (sizeV == 0);
 	}
 
 	void clear()
@@ -238,12 +238,27 @@ public:
 
 	iterator push_back(const Object & obj)
 	{
-		Node * current_last = last();
-		return iterator(current_last->right = new Node(obj, current_last, NULL), this);
+		Node * ptr;		
+		
+		if(empty())
+		{
+			ptr = beginPtr = new Node(obj, NULL, NULL);
+		}
+			
+		else
+		{
+			Node * last_ptr = last().current;
+			ptr = last_ptr->right = new Node(obj, last_ptr, NULL);
+		}
+
+		++sizeV;
+		
+		return iterator(ptr, this);
 	}
 
 	iterator push_front(const Object & obj)
 	{
+		++sizeV;
 		return iterator(beginPtr = new Node(obj, NULL, beginPtr), this);
 	}
 
@@ -254,10 +269,11 @@ public:
 			std::cout<<"Error: You cannot pop in an empty list!"<<std::endl;
 			return;
 		}
-		--sizeV;
+		
 		Node * ptr = beginPtr;
 		beginPtr = beginPtr->right;
-		delete ptr;		
+		delete ptr;	
+		--sizeV;	
 	}
 
 	void pop_back()
@@ -266,8 +282,7 @@ public:
 		{
 			std::cout<<"Error: You cannot pop in an empty list!"<<std::endl;
 			return;
-		}
-		--sizeV;
+		}		
 		
 		if(size() == 1)
 		{
@@ -286,6 +301,8 @@ public:
 			delete last_ptr;
 			secondlast_ptr->right = NULL;			
 		}
+
+		--sizeV;
 
 	}
 
@@ -313,9 +330,15 @@ public:
 	void print() 
 	{
 		const_iterator itr_last = last();
-		for(const_iterator itr=begin(); itr!=itr_last; ++itr)
-			std::cout<<*itr<<" ";
-		std::cout<<"\n";
+		const_iterator itr=begin();
+
+		if(itr_last.current != NULL)
+		{
+			for(; itr!=itr_last; ++itr)
+				std::cout<<*itr<<" ";
+			std::cout<<*itr<<"\n";
+		}
+		
 	}
 
 	
