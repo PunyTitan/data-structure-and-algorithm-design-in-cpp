@@ -27,41 +27,35 @@ public:
 
 		const_iterator findNextAlive() const
 		{
-			Node * ptr = current;
+			Node * ptr = this->current;
 
-			while(ptr->right != tail)
+			while(true)
 			{
 				ptr = ptr->right;
 				if(ptr->alive)
-					return *const_iterator(ptr, this);
+					return iterator(ptr, this->currentList);
 			}
-
-			return const_iterator(tail, this);
 		}
 
 		const_iterator findPrevAlive() const
 		{
-			Node * ptr = current;		
+			Node * ptr = this->current;		
 
-			while(ptr->left != head)
+			while(true)
 			{
 				ptr = ptr->left;
 				if(ptr->alive)
-					return const_iterator(ptr, this);
-			}	
-
-			return const_iterator(head, this);
+					return const_iterator(ptr, this->currentList);
+			}
 		}
 
 
 		const_iterator & operator++()
 		{
-			Node * ptr = current;
-
-			while(ptr->right != tail)
+			while(true)
 			{
-				ptr = ptr->right;
-				if(ptr->alive)
+				this->current = this->current->right;
+				if(this->current->alive)
 					break;
 			}
 
@@ -77,14 +71,13 @@ public:
 
 		const_iterator & operator--()
 		{
-			Node * ptr = current;		
-
-			while(ptr->left != head)
+			while(true)
 			{
-				ptr = ptr->left;
-				if(ptr->alive)
+				this->current = this->current->left;
+				if(this->current->alive)
 					break;
 			}	
+
 			return *this;
 		}
 
@@ -135,10 +128,6 @@ public:
 	friend class listLazy<Object>;
 	};
 
-	/*
-	In this class, I use this->current instead of current because the compiler cannot handle template well in this condition. (Or we can say that the compiler has its design choice)
-	Related explaination: http://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-	*/
 	class iterator : public const_iterator
 	{
 		public:
@@ -149,38 +138,33 @@ public:
 		{
 			Node * ptr = this->current;
 
-			while(ptr->right != tail)
+			while(true)
 			{
 				ptr = ptr->right;
 				if(ptr->alive)
-					return *iterator(ptr, this);
+					return iterator(ptr, this->currentList);
 			}
 
-			return iterator(tail, this);
 		}
 
 		iterator findPrevAlive()
 		{
 			Node * ptr = this->current;		
 
-			while(ptr->left != head)
+			while(true)
 			{
 				ptr = ptr->left;
 				if(ptr->alive)
-					return iterator(ptr, this);
+					return iterator(ptr, this->currentList);
 			}	
-
-			return iterator(head, this);
 		}
 
 		iterator & operator++()
 		{
-			Node * ptr = this->current;
-
-			while(ptr->right != tail)
+			while(true)
 			{
-				ptr = ptr->right;
-				if(ptr->alive)
+				this->current = this->current->right;
+				if(this->current->alive)
 					break;
 			}
 
@@ -196,14 +180,13 @@ public:
 
 		iterator & operator--()
 		{
-			Node * ptr = this->current;		
-
-			while(ptr->left != head)
+			while(true)
 			{
-				ptr = ptr->left;
-				if(ptr->alive)
+				this->current = this->current->left;
+				if(this->current->alive)
 					break;
 			}	
+
 			return *this;
 		}
 
@@ -289,6 +272,11 @@ public:
 		return sizeV;
 	}
 
+	int spareSize() const
+	{
+		return deadV;
+	}
+
 	bool empty() const
 	{
 		return sizeV == 0;
@@ -330,7 +318,7 @@ public:
 		if(empty())
 		{
 			std::cout<<"Error: Empty list."<<std::endl;
-			return *const_iterator(head, this);
+			return *begin_itr;
 		}			
 
 		return *(begin_itr.findNextAlive());
@@ -342,7 +330,7 @@ public:
 		if(empty())
 		{
 			std::cout<<"Error: Empty list."<<std::endl;
-			return *iterator(head, this);
+			return *begin_itr;
 		}			
 
 		return *(begin_itr.findNextAlive());
@@ -404,9 +392,11 @@ public:
 			
 		iterator rtr_itr = itr.findNextAlive();
 
-
-		if(sizeV == deadV && sizeV != 0)
+		if(sizeV <= deadV && sizeV != 0)
+		{
 			cleanDead();
+		}
+			
 
 		return rtr_itr;
 	}
@@ -423,7 +413,7 @@ public:
 	//O(n)
 	void cleanDead()
 	{
-		Node * ptr = head->right;
+		Node * ptr = head;
 		Node * del_ptr = NULL;
 		while(ptr->right != tail)
 		{
@@ -431,15 +421,22 @@ public:
 			{
 				del_ptr = ptr->right;
 				ptr->right = del_ptr->right;
+				ptr->right->left = ptr;           
 				delete del_ptr;
+				--deadV;
 			}
 			else
 				ptr = ptr->right;
 		}
 
-		/*aliveHead = head;
-		aliveTail = tail;*/
 	}
+
+	/*void test_print()
+	{
+		for(Node * be = head; be != tail; be = be->right)
+			std::cout<<be->item<<"-"<<be->alive<<" ";
+		std::cout<<"\n";
+	}*/
 
 	void print() 
 	{
@@ -461,9 +458,6 @@ private:
 		deadV = 0;
 		head = new Node();
 		tail = new Node();
-
-		head.alive = true;
-		tail.alive = true;
 
 		head->right = tail;
 		tail->left = head;
