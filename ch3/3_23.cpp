@@ -66,6 +66,14 @@ string inToPost(string str)
 					}
 					operatorS.push(token);
 					break;
+				case '^':
+					while(!operatorS.empty() && operatorS.top()=="^")
+					{
+						resultV.push_back(operatorS.top());
+						operatorS.pop();
+					}
+					operatorS.push(token);
+					break;
 				case '(':
 					operatorS.push(token);
 					break;
@@ -73,6 +81,7 @@ string inToPost(string str)
 					while(operatorS.top() != "(")
 					{
 						resultV.push_back(operatorS.top());
+
 						operatorS.pop();
 					}
 					operatorS.pop();
@@ -96,7 +105,9 @@ int main(int argc, char const *argv[])
 {
 	string test = "4.99 * 1.06 + 5.99 + 6.99 * 1.06"; 
 	string test2 = "1 + 2 * 3 + ( 4 * 5 + 6 ) * 7";
+	string test3 = "1 + 2 * 3 + ( 4 * 5 ^ 6 ) * 7";
 	cout<<inToPost(test)<<endl;	
 	cout<<inToPost(test2)<<endl;
+	cout<<inToPost(test3)<<endl;
 	return 0;
 }
