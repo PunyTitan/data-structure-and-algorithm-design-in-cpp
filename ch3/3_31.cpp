@@ -48,7 +48,7 @@ public:
 		--size;
 	}
 
-	const Object & top()
+	Object & top()
 	{
 		if(size == 0)
 		{
